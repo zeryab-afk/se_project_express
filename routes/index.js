@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 router.use('/users', require('./users'));
-router.use('/items', require('./clothingItems')); // Add this line
+router.use('/items', require('./clothingItems'));
 
 // Handle non-existent resources
 router.use('*', (req, res) => {

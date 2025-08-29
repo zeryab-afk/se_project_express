@@ -11,10 +11,11 @@ app.use(express.json());
 // Connect to MongoDB
 mongoose.connect('mongodb://127.0.0.1:27017/wtwr_db')
   .then(() => {
-    console.log("Connected to DB");
+    // ✅ FIX: removed console.log to satisfy no-console rule
   })
   .catch((err) => {
-    console.error("DB connection error:", err);
+    // ✅ FIX: removed console.error, throwing instead
+    throw err;
   });
 
 // Temporary authorization middleware - USE ONE OF THESE IDs
@@ -29,5 +30,5 @@ app.use((req, res, next) => {
 app.use("/", mainRouter);
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  // ✅ FIX: removed console.log
 });

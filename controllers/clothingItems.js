@@ -3,14 +3,12 @@ const ClothingItem = require('../models/clothingItem');
 const { ERROR_BAD_REQUEST, ERROR_NOT_FOUND, ERROR_SERVER } = require('../utils/errors');
 
 // GET all items
-module.exports.getClothingItems = (req, res) => {
-  ClothingItem.find({})
+module.exports.getClothingItems = (req, res) => ClothingItem.find({})   // ✅ Added return
     .then((items) => res.send(items))
     .catch((err) => {
       console.error(err);
-      res.status(ERROR_SERVER).send({ message: 'An error has occurred on the server' });
+      return res.status(ERROR_SERVER).send({ message: 'An error has occurred on the server' }); // ✅ return
     });
-};
 
 // CREATE new item
 module.exports.createClothingItem = (req, res) => {
@@ -20,15 +18,14 @@ module.exports.createClothingItem = (req, res) => {
     return res.status(ERROR_BAD_REQUEST).send({ message: 'Missing required fields' });
   }
 
-  ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
+  return ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })  // ✅ return
     .then((item) => res.status(201).send(item))
     .catch((err) => {
       console.error(err);
       if (err.name === 'ValidationError') {
-        res.status(ERROR_BAD_REQUEST).send({ message: 'Invalid data passed to create item' });
-      } else {
-        res.status(ERROR_SERVER).send({ message: 'An error has occurred on the server' });
+        return res.status(ERROR_BAD_REQUEST).send({ message: 'Invalid data passed to create item' }); // ✅ return
       }
+      return res.status(ERROR_SERVER).send({ message: 'An error has occurred on the server' }); // ✅ return
     });
 };
 
@@ -40,16 +37,16 @@ module.exports.deleteClothingItem = (req, res) => {
     return res.status(ERROR_BAD_REQUEST).send({ message: 'Invalid item ID format' });
   }
 
-  ClothingItem.findByIdAndDelete(itemId)
+  return ClothingItem.findByIdAndDelete(itemId)   // ✅ return
     .then((item) => {
       if (!item) {
-        return res.status(ERROR_NOT_FOUND).send({ message: 'Item not found' });
+        return res.status(ERROR_NOT_FOUND).send({ message: 'Item not found' }); // ✅ return
       }
-      res.send(item);
+      return res.send(item); // ✅ return added
     })
     .catch((err) => {
       console.error(err);
-      res.status(ERROR_SERVER).send({ message: 'An error has occurred on the server' });
+      return res.status(ERROR_SERVER).send({ message: 'An error has occurred on the server' }); // ✅ return
     });
 };
 
@@ -61,20 +58,20 @@ module.exports.likeItem = (req, res) => {
     return res.status(ERROR_BAD_REQUEST).send({ message: 'Invalid item ID format' });
   }
 
-  ClothingItem.findByIdAndUpdate(
+  return ClothingItem.findByIdAndUpdate(   // ✅ return
     itemId,
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
     .then((item) => {
       if (!item) {
-        return res.status(ERROR_NOT_FOUND).send({ message: 'Item not found' });
+        return res.status(ERROR_NOT_FOUND).send({ message: 'Item not found' }); // ✅ return
       }
-      res.send(item);
+      return res.send(item); // ✅ return
     })
     .catch((err) => {
       console.error(err);
-      res.status(ERROR_SERVER).send({ message: 'An error has occurred on the server' });
+      return res.status(ERROR_SERVER).send({ message: 'An error has occurred on the server' }); // ✅ return
     });
 };
 
@@ -86,19 +83,19 @@ module.exports.dislikeItem = (req, res) => {
     return res.status(ERROR_BAD_REQUEST).send({ message: 'Invalid item ID format' });
   }
 
-  ClothingItem.findByIdAndUpdate(
+  return ClothingItem.findByIdAndUpdate(   // ✅ return
     itemId,
     { $pull: { likes: req.user._id } },
     { new: true },
   )
     .then((item) => {
       if (!item) {
-        return res.status(ERROR_NOT_FOUND).send({ message: 'Item not found' });
+        return res.status(ERROR_NOT_FOUND).send({ message: 'Item not found' }); // ✅ return
       }
-      res.send(item);
+      return res.send(item); // ✅ return
     })
     .catch((err) => {
       console.error(err);
-      res.status(ERROR_SERVER).send({ message: 'An error has occurred on the server' });
+      return res.status(ERROR_SERVER).send({ message: 'An error has occurred on the server' }); // ✅ return
     });
 };
