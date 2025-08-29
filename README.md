@@ -1,9 +1,86 @@
-# WTWR (What to Wear?): Back End
-The back-end project is focused on creating a server for the WTWR application. You’ll gain a deeper understanding of how to work with databases, set up security and testing, and deploy web applications on a remote machine. The eventual goal is to create a server with an API and user authorization.
-## Running the Project
-`npm run start` — to launch the server 
+WTWR (What to Wear) Backend API
+A complete Express.js backend API for the "What to Wear" application with MongoDB integration.
 
-`npm run dev` — to launch the server with the hot reload feature
+🚀 Features
+User management (create, read users)
 
-### Testing
-Before committing your code, make sure you edit the file `sprint.txt` in the root folder. The file `sprint.txt` should contain the number of the sprint you're currently working on. For ex. 12
+Clothing item CRUD operations
+
+Like/unlike functionality
+
+Comprehensive error handling
+
+RESTful API design
+
+🛠️ Technologies
+Node.js & Express.js
+
+MongoDB with Mongoose
+
+Validator.js for data validation
+
+ESLint for code quality
+
+📦 Installation
+Install dependencies:
+
+bash
+npm install
+Start MongoDB locally
+
+Run the server:
+
+bash
+npm run dev  # Development with hot reload
+npm start    # Production
+📡 API Endpoints
+Users
+GET /users - Get all users
+
+GET /users/:userId - Get user by ID
+
+POST /users - Create new user
+
+Clothing Items
+GET /items - Get all items
+
+POST /items - Create new item
+
+DELETE /items/:itemId - Delete item
+
+PUT /items/:itemId/likes - Like item
+
+DELETE /items/:itemId/likes - Unlike item
+
+🔧 Example Usage
+Create User:
+
+bash
+POST http://localhost:3001/users
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "avatar": "https://example.com/avatar.jpg"
+}
+Create Clothing Item:
+
+bash
+POST http://localhost:3001/items
+Content-Type: application/json
+
+{
+  "name": "Winter Jacket",
+  "weather": "cold",
+  "imageUrl": "https://example.com/jacket.jpg"
+}
+🏗️ Project Structure
+text
+/controllers    # Route handlers
+/models         # Database models  
+/routes         # API routes
+/utils          # Utilities
+app.js          # Main application
+package.json    # Dependencies
+🧪 Testing
+Run the Postman test suite to verify all endpoints work correctly.

@@ -1,12 +1,33 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const mainRouter = require('./routes/index');
 
 const { PORT = 3001 } = process.env;
 const app = express();
 
-// Connect to MongoDB
-mongoose.connect('mongodb://127.0.0.1:27017/wtwr_db');
+// Middleware to parse JSON
+app.use(express.json());
 
-app.listen(3001, () => {             
-  console.log("Server is running on port 3001");
+// Connect to MongoDB
+mongoose.connect('mongodb://127.0.0.1:27017/wtwr_db')
+  .then(() => {
+    console.log("Connected to DB");
+  })
+  .catch((err) => {
+    console.error("DB connection error:", err);
+  });
+
+// Temporary authorization middleware - USE ONE OF THESE IDs
+app.use((req, res, next) => {
+  req.user = {
+    _id: '68b14587079503c84fa2bfb8'
+  };
+  next();
+});
+
+// Use routes - This should come AFTER the auth middleware (ONLY ONCE)
+app.use("/", mainRouter);
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
