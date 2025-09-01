@@ -1,14 +1,13 @@
 const express = require('express');
-const { StatusCodes } = require('http-status-codes');
+const { ERROR_NOT_FOUND } = require('../utils/errors');
 
 const router = express.Router();
 
 router.use('/users', require('./users'));
 router.use('/items', require('./clothingItems'));
 
-// Handle non-existent resources
 router.use('*', (req, res) => {
-  res.status(StatusCodes.NOT_FOUND).send({ message: 'Requested resource not found' });
+  res.status(ERROR_NOT_FOUND).send({ message: 'Requested resource not found' });
 });
 
 module.exports = router;

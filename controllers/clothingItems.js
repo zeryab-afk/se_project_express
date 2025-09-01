@@ -4,15 +4,13 @@ const {
   ERROR_BAD_REQUEST,
   ERROR_NOT_FOUND,
   ERROR_SERVER,
-  ERROR_FORBIDDEN // ✅ NEW: Import FORBIDDEN error
+  ERROR_FORBIDDEN,
 } = require('../utils/errors');
 
-// GET all items
 module.exports.getClothingItems = (req, res) => ClothingItem.find({})
-    .then((items) => res.send(items))
-    .catch(() => res.status(ERROR_SERVER).send({ message: 'An error has occurred on the server' }));
+  .then((items) => res.send(items))
+  .catch(() => res.status(ERROR_SERVER).send({ message: 'An error has occurred on the server' }));
 
-// CREATE new item
 module.exports.createClothingItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
 
@@ -23,7 +21,6 @@ module.exports.createClothingItem = (req, res) => {
   return ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((item) => res.status(201).send(item))
     .catch((err) => {
-      // ✅ REMOVED: console.error
       if (err.name === 'ValidationError') {
         return res.status(ERROR_BAD_REQUEST).send({ message: 'Invalid data passed to create item' });
       }
@@ -31,7 +28,6 @@ module.exports.createClothingItem = (req, res) => {
     });
 };
 
-// DELETE item - ✅ UPDATED: Added ownership check
 module.exports.deleteClothingItem = (req, res) => {
   const { itemId } = req.params;
 
@@ -45,7 +41,6 @@ module.exports.deleteClothingItem = (req, res) => {
         return res.status(ERROR_NOT_FOUND).send({ message: 'Item not found' });
       }
 
-      // ✅ NEW: Check if user owns the item
       if (item.owner.toString() !== req.user._id) {
         return res.status(ERROR_FORBIDDEN).send({ message: 'Cannot delete another user\'s item' });
       }
@@ -54,7 +49,6 @@ module.exports.deleteClothingItem = (req, res) => {
         .then(() => res.send({ message: 'Item deleted' }));
     })
     .catch((err) => {
-      // ✅ REMOVED: console.error
       if (err.name === 'CastError') {
         return res.status(ERROR_BAD_REQUEST).send({ message: 'Invalid item ID' });
       }
@@ -62,7 +56,6 @@ module.exports.deleteClothingItem = (req, res) => {
     });
 };
 
-// LIKE item
 module.exports.likeItem = (req, res) => {
   const { itemId } = req.params;
 
@@ -82,7 +75,6 @@ module.exports.likeItem = (req, res) => {
       return res.send(item);
     })
     .catch((err) => {
-      // ✅ REMOVED: console.error
       if (err.name === 'CastError') {
         return res.status(ERROR_BAD_REQUEST).send({ message: 'Invalid item ID' });
       }
@@ -90,7 +82,6 @@ module.exports.likeItem = (req, res) => {
     });
 };
 
-// DISLIKE item
 module.exports.dislikeItem = (req, res) => {
   const { itemId } = req.params;
 
@@ -110,7 +101,6 @@ module.exports.dislikeItem = (req, res) => {
       return res.send(item);
     })
     .catch((err) => {
-      // ✅ REMOVED: console.error
       if (err.name === 'CastError') {
         return res.status(ERROR_BAD_REQUEST).send({ message: 'Invalid item ID' });
       }

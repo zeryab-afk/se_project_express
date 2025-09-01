@@ -2,8 +2,7 @@ const express = require('express');
 const auth = require('../middlewares/auth');
 const {
   getCurrentUser,
-  updateUser
-  // ✅ REMOVED: createUser and login (they're used directly in app.js)
+  updateUser,
 } = require('../controllers/users');
 
 const router = express.Router();

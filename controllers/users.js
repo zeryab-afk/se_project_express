@@ -6,13 +6,10 @@ const {
   ERROR_NOT_FOUND,
   ERROR_SERVER,
   ERROR_UNAUTHORIZED,
-  ERROR_CONFLICT
+  ERROR_CONFLICT,
 } = require('../utils/errors');
 const { JWT_SECRET } = require('../utils/config');
 
-// ✅ REMOVED: getUsers function (no longer needed)
-
-// ✅ UPDATED: getUser replaced with getCurrentUser
 const getCurrentUser = (req, res) => {
   User.findById(req.user._id)
     .orFail(() => {
@@ -32,17 +29,14 @@ const getCurrentUser = (req, res) => {
     });
 };
 
-// ✅ UPDATED: createUser to handle email and password
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
   bcrypt.hash(password, 10)
     .then((hash) => User.create({ name, avatar, email, password: hash }))
     .then((user) => {
-      // Remove password from response
       const userWithoutPassword = user.toObject();
       delete userWithoutPassword.password;
-
       res.status(201).send(userWithoutPassword);
     })
     .catch((err) => {
@@ -56,31 +50,35 @@ const createUser = (req, res) => {
     });
 };
 
-// ✅ NEW: login controller
 const login = (req, res) => {
   const { email, password } = req.body;
 
-  User.findUserByCredentials(email, password)
+  if (!email || !password) {
+    return res.status(ERROR_BAD_REQUEST).send({ message: 'Email and password are required' });
+  }
+
+  return User.findUserByCredentials(email, password) // ✅ Added return
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: '7d',
       });
-
       res.send({ token });
     })
     .catch((err) => {
-      res.status(ERROR_UNAUTHORIZED).send({ message: err.message });
+      if (err.message === 'Incorrect email or password') {
+        return res.status(ERROR_UNAUTHORIZED).send({ message: err.message });
+      }
+      return res.status(ERROR_SERVER).send({ message: 'An error has occurred on the server' });
     });
 };
 
-// ✅ NEW: updateUser controller
 const updateUser = (req, res) => {
   const { name, avatar } = req.body;
 
   User.findByIdAndUpdate(
     req.user._id,
     { name, avatar },
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   )
     .orFail(() => {
       const error = new Error('User not found');
@@ -99,5 +97,9 @@ const updateUser = (req, res) => {
     });
 };
 
-// ✅ UPDATED: Export statement
-module.exports = { getCurrentUser, createUser, login, updateUser };
+module.exports = {
+  getCurrentUser,
+  createUser,
+  login,
+  updateUser,
+};
