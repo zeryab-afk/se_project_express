@@ -1,3 +1,4 @@
+// controllers/users.js
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
@@ -35,9 +36,20 @@ const createUser = (req, res) => {
   bcrypt.hash(password, 10)
     .then((hash) => User.create({ name, avatar, email, password: hash }))
     .then((user) => {
-      const userWithoutPassword = user.toObject();
-      delete userWithoutPassword.password;
-      res.status(201).send(userWithoutPassword);
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: '7d',
+      });
+
+      // NEW: Return both token and user data
+      res.status(201).send({
+        token,
+        user: {
+          _id: user._id,
+          name: user.name,
+          avatar: user.avatar,
+          email: user.email
+        }
+      });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -57,12 +69,22 @@ const login = (req, res) => {
     return res.status(ERROR_BAD_REQUEST).send({ message: 'Email and password are required' });
   }
 
-  return User.findUserByCredentials(email, password) // ✅ Added return
+  return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: '7d',
       });
-      res.send({ token });
+
+      // NEW: Return both token and user data
+      res.send({
+        token,
+        user: {
+          _id: user._id,
+          name: user.name,
+          avatar: user.avatar,
+          email: user.email
+        }
+      });
     })
     .catch((err) => {
       if (err.message === 'Incorrect email or password') {

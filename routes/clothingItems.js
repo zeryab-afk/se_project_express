@@ -1,3 +1,4 @@
+// routes/clothingItems.js
 const router = require('express').Router();
 const auth = require('../middlewares/auth');
 const {
@@ -8,7 +9,7 @@ const {
   dislikeItem,
 } = require('../controllers/clothingItems');
 
-// ✅ ADDED: auth middleware to protected routes
+// CHANGED: Make GET /items public, protect other routes
 router.get('/', getClothingItems);
 router.post('/', auth, createClothingItem);
 router.delete('/:itemId', auth, deleteClothingItem);

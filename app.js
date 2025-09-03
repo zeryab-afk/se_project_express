@@ -1,3 +1,4 @@
+// app.js
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -15,15 +16,18 @@ mongoose.connect('mongodb://127.0.0.1:27017/wtwr_db')
     throw err;
   });
 
+// NEW: Add auth routes
 app.post('/signup', require('./controllers/users').createUser);
 app.post('/signin', require('./controllers/users').login);
 
+// NEW: Make items route public for GET requests
 app.use('/items', require('./routes/clothingItems'));
 
+// NEW: Protect all other routes
 app.use(auth);
 app.use('/', mainRouter);
 
-app.use((err, req, res) => { // ✅ Removed unused next parameter
+app.use((err, req, res) => {
   const { statusCode = 500, message } = err;
   res.status(statusCode).send({
     message: statusCode === 500 ? 'An error occurred on the server' : message,
