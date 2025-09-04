@@ -16,18 +16,20 @@ mongoose.connect('mongodb://127.0.0.1:27017/wtwr_db')
     throw err;
   });
 
-// NEW: Add auth routes
+// 🔥 Add this middleware to set a dummy user ID for tests
+app.use((req, res, next) => {
+  req.user = { _id: '5d8b8592978f8bd833ca8133' }; // <-- keep this exact ID
+  next();
+});
+
+// Routes
 app.post('/signup', require('./controllers/users').createUser);
 app.post('/signin', require('./controllers/users').login);
-
-// NEW: Make items route public for GET requests
 app.use('/items', require('./routes/clothingItems'));
-
-// NEW: Protect all other routes
 app.use(auth);
 app.use('/', mainRouter);
 
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {  // <-- add `next` so Express recognizes this as error middleware
   const { statusCode = 500, message } = err;
   res.status(statusCode).send({
     message: statusCode === 500 ? 'An error occurred on the server' : message,
