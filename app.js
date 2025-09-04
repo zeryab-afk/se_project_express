@@ -1,4 +1,3 @@
-// app.js
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -26,10 +25,11 @@ app.use((req, res, next) => {
 app.post('/signup', require('./controllers/users').createUser);
 app.post('/signin', require('./controllers/users').login);
 app.use('/items', require('./routes/clothingItems'));
+
 app.use(auth);
 app.use('/', mainRouter);
 
-app.use((err, req, res, next) => {  // <-- add `next` so Express recognizes this as error middleware
+app.use((err, req, res) => {  // <-- Removed unused `next` parameter
   const { statusCode = 500, message } = err;
   res.status(statusCode).send({
     message: statusCode === 500 ? 'An error occurred on the server' : message,
