@@ -23,7 +23,7 @@ CORS: Cross-origin resource sharing
 Installation
 
 Clone the repository:
-git clone https://github.com/zaryab-afk/se_project_express.git
+git clone https://github.com/zeryab-afk/se_project_express.git
 cd se_project_express
 
 
