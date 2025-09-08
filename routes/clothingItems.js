@@ -1,4 +1,4 @@
-// routes/clothingItems.js
+// routes/clothingItems.js - UPDATED FOR PROJECT 15
 const router = require('express').Router();
 const auth = require('../middlewares/auth');
 const {
@@ -8,12 +8,12 @@ const {
   likeItem,
   dislikeItem,
 } = require('../controllers/clothingItems');
+const { createItemValidation, idValidation } = require('../middlewares/validation');
 
-// CHANGED: Make GET /items public, protect other routes
 router.get('/', getClothingItems);
-router.post('/', auth, createClothingItem);
-router.delete('/:itemId', auth, deleteClothingItem);
-router.put('/:itemId/likes', auth, likeItem);
-router.delete('/:itemId/likes', auth, dislikeItem);
+router.post('/', auth, createItemValidation, createClothingItem);
+router.delete('/:itemId', auth, idValidation, deleteClothingItem);
+router.put('/:itemId/likes', auth, idValidation, likeItem);
+router.delete('/:itemId/likes', auth, idValidation, dislikeItem);
 
 module.exports = router;

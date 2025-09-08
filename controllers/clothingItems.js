@@ -1,48 +1,52 @@
+// controllers/clothingItems.js - UPDATED FOR PROJECT 15
 const mongoose = require('mongoose');
 const ClothingItem = require('../models/clothingItem');
+// Removed unused ERROR_* constants
 const {
-  ERROR_BAD_REQUEST,
-  ERROR_NOT_FOUND,
-  ERROR_SERVER,
-  ERROR_FORBIDDEN,
-} = require('../utils/errors');
+  BadRequestError,
+  NotFoundError,
+  ForbiddenError,
+  InternalServerError,
+} = require('../utils/customErrors');
 
-module.exports.getClothingItems = (req, res) => ClothingItem.find({})
-  .then((items) => res.send(items))
-  .catch(() => res.status(ERROR_SERVER).send({ message: 'An error has occurred on the server' }));
+module.exports.getClothingItems = (req, res, next) => {
+  ClothingItem.find({})
+    .then((items) => res.send(items))
+    .catch(() => next(new InternalServerError('An error has occurred on the server')));
+};
 
-module.exports.createClothingItem = (req, res) => {
+module.exports.createClothingItem = (req, res, next) => {
   const { name, weather, imageUrl } = req.body;
 
   if (!name || !weather || !imageUrl) {
-    return res.status(ERROR_BAD_REQUEST).send({ message: 'Missing required fields' });
+    return next(new BadRequestError('Missing required fields'));
   }
 
   return ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((item) => res.status(201).send(item))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(ERROR_BAD_REQUEST).send({ message: 'Invalid data passed to create item' });
+        return next(new BadRequestError('Invalid data passed to create item'));
       }
-      return res.status(ERROR_SERVER).send({ message: 'An error has occurred on the server' });
+      return next(new InternalServerError('An error has occurred on the server'));
     });
 };
 
-module.exports.deleteClothingItem = (req, res) => {
+module.exports.deleteClothingItem = (req, res, next) => {
   const { itemId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(itemId)) {
-    return res.status(ERROR_BAD_REQUEST).send({ message: 'Invalid item ID format' });
+    return next(new BadRequestError('Invalid item ID format'));
   }
 
   return ClothingItem.findById(itemId)
     .then((item) => {
       if (!item) {
-        return res.status(ERROR_NOT_FOUND).send({ message: 'Item not found' });
+        return next(new NotFoundError('Item not found'));
       }
 
       if (item.owner.toString() !== req.user._id) {
-        return res.status(ERROR_FORBIDDEN).send({ message: 'Cannot delete another user\'s item' });
+        return next(new ForbiddenError('Cannot delete another user\'s item'));
       }
 
       return ClothingItem.findByIdAndDelete(itemId)
@@ -50,17 +54,17 @@ module.exports.deleteClothingItem = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(ERROR_BAD_REQUEST).send({ message: 'Invalid item ID' });
+        return next(new BadRequestError('Invalid item ID'));
       }
-      return res.status(ERROR_SERVER).send({ message: 'An error has occurred on the server' });
+      return next(new InternalServerError('An error has occurred on the server'));
     });
 };
 
-module.exports.likeItem = (req, res) => {
+module.exports.likeItem = (req, res, next) => {
   const { itemId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(itemId)) {
-    return res.status(ERROR_BAD_REQUEST).send({ message: 'Invalid item ID format' });
+    return next(new BadRequestError('Invalid item ID format'));
   }
 
   return ClothingItem.findByIdAndUpdate(
@@ -70,23 +74,23 @@ module.exports.likeItem = (req, res) => {
   )
     .then((item) => {
       if (!item) {
-        return res.status(ERROR_NOT_FOUND).send({ message: 'Item not found' });
+        return next(new NotFoundError('Item not found'));
       }
       return res.send(item);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(ERROR_BAD_REQUEST).send({ message: 'Invalid item ID' });
+        return next(new BadRequestError('Invalid item ID'));
       }
-      return res.status(ERROR_SERVER).send({ message: 'An error has occurred on the server' });
+      return next(new InternalServerError('An error has occurred on the server'));
     });
 };
 
-module.exports.dislikeItem = (req, res) => {
+module.exports.dislikeItem = (req, res, next) => {
   const { itemId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(itemId)) {
-    return res.status(ERROR_BAD_REQUEST).send({ message: 'Invalid item ID format' });
+    return next(new BadRequestError('Invalid item ID format'));
   }
 
   return ClothingItem.findByIdAndUpdate(
@@ -96,14 +100,14 @@ module.exports.dislikeItem = (req, res) => {
   )
     .then((item) => {
       if (!item) {
-        return res.status(ERROR_NOT_FOUND).send({ message: 'Item not found' });
+        return next(new NotFoundError('Item not found'));
       }
       return res.send(item);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(ERROR_BAD_REQUEST).send({ message: 'Invalid item ID' });
+        return next(new BadRequestError('Invalid item ID'));
       }
-      return res.status(ERROR_SERVER).send({ message: 'An error has occurred on the server' });
+      return next(new InternalServerError('An error has occurred on the server'));
     });
 };

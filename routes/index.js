@@ -1,13 +1,12 @@
+// routes/index.js - UPDATED FOR PROJECT 15
 const express = require('express');
-const { ERROR_NOT_FOUND } = require('../utils/errors');
+const { NotFoundError } = require('../utils/customErrors');
 
 const router = express.Router();
 
-router.use('/users', require('./users'));
-router.use('/items', require('./clothingItems'));
-
-router.use('*', (req, res) => {
-  res.status(ERROR_NOT_FOUND).send({ message: 'Requested resource not found' });
+// 404 handler for undefined routes
+router.use('*', (req, res, next) => {
+  next(new NotFoundError('Requested resource not found'));
 });
 
 module.exports = router;

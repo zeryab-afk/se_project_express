@@ -1,39 +1,54 @@
+// app.js - UPDATED FOR PROJECT 15
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const mainRouter = require('./routes/index');
+const { errors } = require('celebrate');
+const { requestLogger, errorLogger } = require('./utils/logger');
+const errorHandler = require('./middlewares/errorHandler');
 const auth = require('./middlewares/auth');
 
-const { PORT = 3001 } = process.env;
+// NEW: Use environment variables with defaults
+const { PORT = 3001, MONGODB_URI = 'mongodb://127.0.0.1:27017/wtwr_db', NODE_ENV } = process.env;
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect('mongodb://127.0.0.1:27017/wtwr_db')
+// Connect to MongoDB
+mongoose.connect(MONGODB_URI)
   .catch((err) => {
     throw err;
   });
 
-// 🔥 Add this middleware to set a dummy user ID for tests
-app.use((req, res, next) => {
-  req.user = { _id: '5d8b8592978f8bd833ca8133' }; // <-- keep this exact ID
-  next();
+// NEW: Request logging middleware
+app.use(requestLogger);
+
+// NEW: Crash test endpoint (remove after review)
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Server will crash now');
+  }, 0);
 });
 
-// Routes
-app.post('/signup', require('./controllers/users').createUser);
-app.post('/signin', require('./controllers/users').login);
+// Public routes (no authentication required)
+app.use('/', require('./routes/auth')); // Auth routes
 app.use('/items', require('./routes/clothingItems'));
 
+// Protected routes (authentication required)
 app.use(auth);
-app.use('/', mainRouter);
+app.use('/users', require('./routes/users')); // User routes
 
-app.use((err, req, res) => {  // <-- Removed unused `next` parameter
-  const { statusCode = 500, message } = err;
-  res.status(statusCode).send({
-    message: statusCode === 500 ? 'An error occurred on the server' : message,
-  });
+// Error logging
+app.use(errorLogger);
+
+// Celebrate error handler
+app.use(errors());
+
+// Centralized error handler
+app.use(errorHandler);
+
+app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
+  console.log(`Server is running on port ${PORT} in ${NODE_ENV} mode`);
 });
-
-app.listen(PORT);
