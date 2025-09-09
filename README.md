@@ -148,6 +148,7 @@ se_project_express/
 ├── .gitignore
 ├── .eslintrc.js
 ├── .editorconfig
+├── .env
 └── README.md
 
 Testing
