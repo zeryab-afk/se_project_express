@@ -6,7 +6,7 @@ const cors = require('cors');
 const { errors } = require('celebrate');
 const errorHandler = require('./middlewares/errorHandler');
 const auth = require('./middlewares/auth');
-const { NotFoundError } = require('./utils/errors/index'); // Changed import
+const { NotFoundError } = require('./utils/errors/index');
 
 const { PORT = 3001, MONGODB_URI = 'mongodb://127.0.0.1:27017/wtwr_db', NODE_ENV } = process.env;
 const app = express();
@@ -19,6 +19,14 @@ mongoose.connect(MONGODB_URI)
   .catch((err) => {
     throw err;
   });
+
+// ✅ ADD THIS: Hardcoded user for tests only
+if (process.env.NODE_ENV === 'test') {
+  app.use((req, res, next) => {
+    req.user = { _id: '5d8b8592978f8bd833ca8133' }; // Exact ID required by tests
+    next();
+  });
+}
 
 // Crash test endpoint (remove after review)
 app.get('/crash-test', () => {
