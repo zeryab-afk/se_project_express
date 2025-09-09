@@ -1,5 +1,5 @@
 // middleware/errorHandler.js - FIXED
-const { ERROR_SERVER } = require('../utils/errors');
+const { ERROR_SERVER } = require('../utils/constants'); 
 
 const errorHandler = (err, req, res, next) => {
   const { statusCode = ERROR_SERVER, message } = err;
@@ -9,7 +9,7 @@ const errorHandler = (err, req, res, next) => {
       ? 'An error occurred on the server'
       : message,
   });
-  next(); // Added to avoid unused parameter warning
+  next();
 };
 
 module.exports = errorHandler;

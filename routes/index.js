@@ -1,6 +1,6 @@
 // routes/index.js - UPDATED FOR PROJECT 15
 const express = require('express');
-const { NotFoundError } = require('../utils/customErrors');
+const { NotFoundError } = require('../utils/errors/index');
 
 const router = express.Router();
 

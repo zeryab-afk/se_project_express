@@ -1,4 +1,4 @@
-// utils/errors/index.js
+/* eslint-disable global-require */
 module.exports = {
   BadRequestError: require('./BadRequestError'),
   UnauthorizedError: require('./UnauthorizedError'),
