@@ -9,7 +9,7 @@ const {
   NotFoundError,
   ConflictError,
   InternalServerError,
-} = require('../utils/customErrors');
+} = require('../utils/errors/index');
 
 const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)

@@ -1,14 +1,15 @@
-// controllers/clothingItems.js - UPDATED FOR PROJECT 15
+// controllers/clothingItems.js - FIXED IMPORT
 const mongoose = require('mongoose');
 const ClothingItem = require('../models/clothingItem');
-// Removed unused ERROR_* constants
+// CHANGE THIS IMPORT:
 const {
   BadRequestError,
   NotFoundError,
   ForbiddenError,
   InternalServerError,
-} = require('../utils/customErrors');
+} = require('../utils/errors/index'); // ✅ Changed from '../utils/customErrors'
 
+// ... rest of your code remains exactly the same ...
 module.exports.getClothingItems = (req, res, next) => {
   ClothingItem.find({})
     .then((items) => res.send(items))

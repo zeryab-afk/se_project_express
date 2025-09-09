@@ -1,7 +1,7 @@
-// middleware/errorHandler.js - NEW FOR PROJECT 15
+// middleware/errorHandler.js - FIXED
 const { ERROR_SERVER } = require('../utils/errors');
 
-const errorHandler = (err, req, res) => {
+const errorHandler = (err, req, res, next) => {
   const { statusCode = ERROR_SERVER, message } = err;
 
   res.status(statusCode).send({
@@ -9,6 +9,7 @@ const errorHandler = (err, req, res) => {
       ? 'An error occurred on the server'
       : message,
   });
+  next(); // Added to avoid unused parameter warning
 };
 
 module.exports = errorHandler;

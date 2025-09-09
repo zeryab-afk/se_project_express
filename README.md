@@ -10,6 +10,14 @@ Comprehensive error handling
 JWT-based authentication
 RESTful API design
 
+
+## 🌐 Domains
+
+| Service          | Domain URL                         |
+|------------------|-----------------------------------|
+| Frontend (React) | https://your-frontend-domain.com   |
+| Backend (API)    | https://your-backend-domain.com    |
+
 Technologies
 
 Node.js & Express.js: Backend framework
@@ -103,31 +111,40 @@ curl -X POST http://localhost:3001/items \
 
 Project Structure
 se_project_express/
-├── controllers/
+├── controllers/         # Route controllers
 │   ├── users.js
 │   ├── clothingItems.js
-│   ├── auth.js
-├── middleware/
+│   └── auth.js
+├── middleware/          # Middleware functions
 │   ├── auth.js
 │   ├── validation.js
-│   ├── errorHandler.js
-├── models/
+│   └── errorHandler.js
+├── models/              # Mongoose models
 │   ├── user.js
-│   ├── clothingItem.js
-├── routes/
+│   └── clothingItem.js
+├── routes/              # Express routes
 │   ├── index.js
 │   ├── users.js
 │   ├── clothingItems.js
-│   ├── auth.js
+│   └── auth.js
 ├── utils/
-│   ├── errors.js
+│   ├── constants.js     # HTTP status constants
+│   ├── errors/          # Custom error classes
+│   │   ├── BadRequestError.js
+│   │   ├── UnauthorizedError.js
+│   │   ├── ForbiddenError.js
+│   │   ├── NotFoundError.js
+│   │   ├── ConflictError.js
+│   │   ├── InternalServerError.js
+│   │   └── index.js
+│   ├── errors.js        # Central export for errors/constants
 │   ├── config.js
-├── .github/
-│   ├── workflows/
-│   │   ├── test.yml
+│   └── logger.js
+├── logs/                # Logs (gitignored)
+├── .env                 # Environment variables (gitignored)
+├── .env.example         # Environment template
 ├── app.js
 ├── package.json
-├── package-lock.json
 ├── .gitignore
 ├── .eslintrc.js
 ├── .editorconfig

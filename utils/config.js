@@ -1,10 +1,16 @@
-// utils/config.js - UPDATED FOR PROJECT 15
+// utils/config.js - FIXED
 require('dotenv').config();
 
-// NEW: Use environment variables with fallbacks
-const { JWT_SECRET = 'your-secret-key', NODE_ENV } = process.env;
+const { JWT_SECRET, NODE_ENV } = process.env;
+
+// Throw error if JWT_SECRET is missing in production
+if (NODE_ENV === 'production' && !JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required in production');
+}
+
+// Use environment variable for production, fallback for development
+const jwtSecret = NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret';
 
 module.exports = {
-  // NEW: Different secret for production vs development
-  JWT_SECRET: NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+  JWT_SECRET: jwtSecret,
 };

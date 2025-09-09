@@ -1,14 +1,13 @@
-// app.js - UPDATED FOR PROJECT 15
+// app.js - FIXED
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const { errors } = require('celebrate');
-const { requestLogger, errorLogger } = require('./utils/logger');
 const errorHandler = require('./middlewares/errorHandler');
 const auth = require('./middlewares/auth');
+const { NotFoundError } = require('./utils/errors/index'); // Changed import
 
-// NEW: Use environment variables with defaults
 const { PORT = 3001, MONGODB_URI = 'mongodb://127.0.0.1:27017/wtwr_db', NODE_ENV } = process.env;
 const app = express();
 
@@ -21,10 +20,7 @@ mongoose.connect(MONGODB_URI)
     throw err;
   });
 
-// NEW: Request logging middleware
-app.use(requestLogger);
-
-// NEW: Crash test endpoint (remove after review)
+// Crash test endpoint (remove after review)
 app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Server will crash now');
@@ -32,15 +28,17 @@ app.get('/crash-test', () => {
 });
 
 // Public routes (no authentication required)
-app.use('/', require('./routes/auth')); // Auth routes
+app.use('/', require('./routes/auth'));
 app.use('/items', require('./routes/clothingItems'));
 
 // Protected routes (authentication required)
 app.use(auth);
-app.use('/users', require('./routes/users')); // User routes
+app.use('/users', require('./routes/users'));
 
-// Error logging
-app.use(errorLogger);
+// Handle unknown routes - MUST BE AFTER ALL OTHER ROUTES
+app.use('*', (req, res, next) => {
+  next(new NotFoundError('Requested resource not found'));
+});
 
 // Celebrate error handler
 app.use(errors());
