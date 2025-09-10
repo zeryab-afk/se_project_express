@@ -15,8 +15,8 @@ RESTful API design
 
 | Service          | Domain URL                         |
 |------------------|-----------------------------------|
-| Frontend (React) | https://your-frontend-domain.com   |
-| Backend (API)    | https://your-backend-domain.com    |
+| Frontend (React) | https://my-react-plum.vercel.app/   |
+| Backend (API)    | https://wtwr-omega.vercel.app/    |
 
 Technologies
 
