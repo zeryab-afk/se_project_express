@@ -1,4 +1,4 @@
-// app.js - FIXED
+// app.js
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -19,12 +19,6 @@ mongoose.connect(MONGODB_URI)
   .catch((err) => {
     throw err;
   });
-
-// ✅ REMOVE THE CONDITION - ALWAYS ADD HARDCODED USER FOR NOW
-app.use((req, res, next) => {
-  req.user = { _id: '5d8b8592978f8bd833ca8133' }; // Exact ID required by tests
-  next();
-});
 
 // Crash test endpoint (remove after review)
 app.get('/crash-test', () => {

@@ -1,4 +1,4 @@
-/* eslint-disable global-require */
+// utils/errors/index.js - REMOVE THE ESLINT DISABLE COMMENT
 module.exports = {
   BadRequestError: require('./BadRequestError'),
   UnauthorizedError: require('./UnauthorizedError'),
