@@ -1,9 +1,16 @@
-// utils/errors/index.js - REMOVE THE ESLINT DISABLE COMMENT
+// utils/errors/index.js
+const BadRequestError = require('./BadRequestError');
+const UnauthorizedError = require('./UnauthorizedError');
+const ForbiddenError = require('./ForbiddenError');
+const NotFoundError = require('./NotFoundError');
+const ConflictError = require('./ConflictError');
+const InternalServerError = require('./InternalServerError');
+
 module.exports = {
-  BadRequestError: require('./BadRequestError'),
-  UnauthorizedError: require('./UnauthorizedError'),
-  ForbiddenError: require('./ForbiddenError'),
-  NotFoundError: require('./NotFoundError'),
-  ConflictError: require('./ConflictError'),
-  InternalServerError: require('./InternalServerError'),
+  BadRequestError,
+  UnauthorizedError,
+  ForbiddenError,
+  NotFoundError,
+  ConflictError,
+  InternalServerError,
 };
