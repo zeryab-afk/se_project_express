@@ -16,7 +16,7 @@ RESTful API design
 | Service          | Domain URL                         |
 |------------------|-----------------------------------|
 | Frontend (React) | https://my-react-plum.vercel.app/   |
-| Backend (API)    | https://wtwr-omega.vercel.app/    |
+| Backend (API)    | https://wtwr-backend.up.railway.app/    |
 
 Technologies
 
