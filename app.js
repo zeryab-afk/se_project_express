@@ -10,7 +10,7 @@ const { NotFoundError } = require('./utils/errors');
 
 const {
   PORT = 3001,
-  MONGODB_URI = 'mongodb://127.0.0.1:27017/wtwr_db',
+  MONGO_URI, // Use the variable you set in Railway
   NODE_ENV = 'development',
 } = process.env;
 
@@ -19,10 +19,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Connect to MongoDB
+// ✅ Connect to MongoDB using the cloud URI
 mongoose
-  .connect(MONGODB_URI)
-  .then(() => console.log(`✅ Connected to MongoDB: ${MONGODB_URI}`))
+  .connect(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log('✅ MongoDB connected'))
   .catch((err) => {
     console.error('❌ MongoDB connection error:', err);
     process.exit(1);
@@ -54,7 +57,7 @@ app.use(errors());
 // Centralized error handler
 app.use(errorHandler);
 
-// Start server - Listen on all interfaces
+// Start server
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${PORT} in ${NODE_ENV} mode`);
 });
